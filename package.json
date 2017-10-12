@@ -9,7 +9,9 @@
     "test": "ng test --watch",
     "test-once": "ng test --single-run",
     "lint": "ng lint",
-    "e2e": "ng e2e --host=localhost"
+    "e2e": "ng e2e --host=localhost",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "private": true,
   "dependencies": {
@@ -36,7 +38,8 @@
     "ng2-fancy-image-uploader": "^1.6.1",
     "ng2-validation": "^3.0.2",
     "rxjs": "^5.4.2",
-    "zone.js": "^0.8.14"
+    "zone.js": "^0.8.14",
+    "snyk": "^1.42.5"
   },
   "devDependencies": {
     "@angular/cli": "1.4.5",
@@ -66,5 +69,6 @@
     "ts-node": "~3.2.0",
     "tslint": "~5.3.2",
     "typescript": "~2.3.3"
-  }
+  },
+  "snyk": true
 }
