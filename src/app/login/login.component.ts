@@ -31,12 +31,15 @@ export class LoginComponent implements OnInit, OnDestroy {
   // this will execute when the page is loaded
   ngOnInit(): void {
     // check whether user is logged in
-    const logged = this.auth.logged;
-    // log user out at the beginning
-    this.auth.logout();
-    // notify that we logged somebody out, if we did so
-    if (logged) {
-      this.notify.info('The previous user was logged out.');
+    try {
+      const logged = this.auth.logged;
+      // notify that we logged somebody out, if we did so
+      if (logged) {
+        this.notify.info('The previous user was logged out.');
+      }
+    } finally {
+      // log user out at the beginning
+      this.auth.logout();
     }
     // don't display the page header
     this.headerControl.display(false);

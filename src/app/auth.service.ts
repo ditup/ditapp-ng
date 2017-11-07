@@ -46,10 +46,10 @@ export class AuthService {
     // get the payload of the token
     const {
       username,
-      email_verified: isEmailVerified
+      verified: isEmailVerified
     }: {
       username: string,
-      email_verified: string,
+      verified: boolean,
     } = jwt.decode(token) as any;
 
     // store login values in local storage

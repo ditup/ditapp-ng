@@ -22,10 +22,6 @@ export class ModelService {
     avatar: { }
   };
 
-  private generateAuthHeader = this.generateBasicAuthHeader;
-
-  private contentTypeHeader: [string, string] = ['Content-Type', 'application/vnd.api+json'];
-
   // the logged headers as expected by HttpClient
   private get loggedHeaders() {
     return this.notLoggedHeaders

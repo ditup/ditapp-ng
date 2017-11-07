@@ -30,8 +30,8 @@ describe('AuthService', () => {
 
     const testToken = [
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
-      'eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwiZW1haWxfdmVyaWZpZWQiOnRydWV9',
-      'ssQD611t5OEZITQYAXx65r6k1vi_LGzofr0ipjIV4Zs'
+      'eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwidmVyaWZpZWQiOnRydWV9',
+      'bIdS3nLkTnXR-wy2i46XwyimO_K0Or89Oxj5VafjC0k'
     ].join('.');
 
     service.login(testToken);
