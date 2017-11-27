@@ -21,7 +21,7 @@
   </li>
 </ul>
 <!-- no messages -->
-<div class="no-content-info" ng-if="messages.$resolved && messages.length === 0">
+<div class="no-content-info" *ngIf="messages.length === 0">
   <span>No messages.</span>
 </div>
 <!-- no messages -->
