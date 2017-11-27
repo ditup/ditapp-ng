@@ -11,3 +11,9 @@
 
   </li>
 </ul>
+
+<!-- no confirmedContacts -->
+<div class="no-content-info" ng-if="confirmedContacts.$resolved && confirmedContacts.length === 0">
+  <span>{{user.username}} hasn't added any contacts yet.</span>
+</div>
+<!-- no confirmedContacts -->
