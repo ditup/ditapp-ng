@@ -1580,6 +1580,55 @@ describe('ModelService', () => {
     }));
   });
 
+  describe('createIdea(Idea)', () => {
+    it('should create idea and return the new idea', async(async () => {
+
+      // execute the function
+      const createIdeaPromise = service.createIdea({ title: 'test', detail: 'test detail' });
+      // mock the backend
+      const req = httpMock.expectOne(`${baseUrl}/ideas`);
+
+      expect(req.request.method).toEqual('POST');
+      expect(req.request.headers.get('content-type')).toEqual('application/vnd.api+json');
+      expect(req.request.headers.has('authorization')).toEqual(true);
+
+      expect(req.request.body).toEqual({
+        data: {
+          type: 'ideas',
+          attributes: {
+            title: 'test',
+            detail: 'test detail'
+          }
+        }
+      });
+
+      req.flush({
+        data: {
+          type: 'ideas',
+          id: '0011223344',
+          attributes: {
+            title: 'test',
+            detail: 'test detail',
+            created: 1234567890000,
+            creator: {
+              data: {
+                type: 'users', id: 'test-user'
+              }
+            }
+          }
+        }
+      });
+
+      const newIdea = await createIdeaPromise;
+
+      expect(newIdea).toEqual({
+        id: '0011223344',
+        title: 'test',
+        detail: 'test detail'
+      });
+    }));
+  });
+
   // verify that there are no outstanding requests remaining
   afterEach(() => {
     httpMock.verify();

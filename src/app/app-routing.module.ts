@@ -38,6 +38,8 @@ import { PeopleWithTagsComponent } from './people/people-with-tags/people-with-t
 import { PeopleNewComponent } from './people/people-new/people-new.component';
 import { PeopleRandomComponent } from './people/people-random/people-random.component';
 
+// ideas
+import { CreateIdeaComponent } from './ideas/create-idea/create-idea.component';
 
 // tags
 import { TagsComponent } from './tags/tags.component';
@@ -234,6 +236,11 @@ const routes: Routes = [
         */
       },
     ]
+  },
+  {
+    path: 'ideas/create',
+    component: CreateIdeaComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: 'messages',

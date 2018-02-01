@@ -11,7 +11,7 @@ import 'rxjs/add/observable/of';
 
 import * as _ from 'lodash';
 
-import { Tag, User, UserTag, Message, Contact } from './shared/types';
+import { Idea, Tag, User, UserTag, Message, Contact } from './shared/types';
 import { AuthService } from './auth.service';
 
 @Injectable()
@@ -753,6 +753,30 @@ export class ModelService {
     const { data, included } = response;
 
     return this.deserializeContact(data, included);
+  }
+
+  public async createIdea({ title, detail }: Idea): Promise<Idea> {
+    const requestBody = {
+      data: {
+        type: 'ideas',
+        attributes: {
+          title,
+          detail
+        }
+      }
+    };
+
+    const response: any = await this.http
+      .post(`${this.baseUrl}/ideas`, requestBody, { headers: this.loggedHeaders }).toPromise();
+
+    return this.deserializeIdea(response.data);
+  }
+
+  private deserializeIdea(ideaData: any): Idea {
+
+    const { id, attributes: { title, detail } } = ideaData;
+
+    return { id, title, detail };
   }
 
   private deserializeMessage(msgData: any, included: any = []): Message {

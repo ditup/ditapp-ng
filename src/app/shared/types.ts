@@ -33,6 +33,12 @@ export class Tag {
   }
 }
 
+export class Idea {
+  constructor(public id: string,
+              public title: string,
+              public detail: string) { }
+}
+
 export class Contact {
   public from: User;
   public to: User;

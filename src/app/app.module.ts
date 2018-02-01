@@ -96,6 +96,8 @@ import { TabNavComponent } from './shared/tab-nav/tab-nav.component';
 import { VerifyEmailCodeComponent } from './verify-email-code/verify-email-code.component';
 import { BaseComponent } from './base/base.component';
 import { FooterComponent } from './footer/footer.component';
+import { IdeaFormComponent } from './ideas/idea-form/idea-form.component';
+import { CreateIdeaComponent } from './ideas/create-idea/create-idea.component';
 
 @NgModule({
   declarations: [
@@ -169,7 +171,9 @@ import { FooterComponent } from './footer/footer.component';
     TabNavComponent,
     VerifyEmailCodeComponent,
     BaseComponent,
-    FooterComponent
+    FooterComponent,
+    IdeaFormComponent,
+    CreateIdeaComponent
   ],
   imports: [
     BrowserModule,
