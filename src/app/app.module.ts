@@ -98,6 +98,9 @@ import { BaseComponent } from './base/base.component';
 import { FooterComponent } from './footer/footer.component';
 import { IdeaFormComponent } from './ideas/idea-form/idea-form.component';
 import { CreateIdeaComponent } from './ideas/create-idea/create-idea.component';
+import { ReadIdeaComponent } from './ideas/read-idea/read-idea.component';
+import { UpdateIdeaComponent } from './ideas/update-idea/update-idea.component';
+import { VoteComponent } from './shared/vote/vote.component';
 
 @NgModule({
   declarations: [
@@ -173,7 +176,10 @@ import { CreateIdeaComponent } from './ideas/create-idea/create-idea.component';
     BaseComponent,
     FooterComponent,
     IdeaFormComponent,
-    CreateIdeaComponent
+    CreateIdeaComponent,
+    ReadIdeaComponent,
+    UpdateIdeaComponent,
+    VoteComponent
   ],
   imports: [
     BrowserModule,

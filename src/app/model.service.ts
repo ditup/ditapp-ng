@@ -772,11 +772,54 @@ export class ModelService {
     return this.deserializeIdea(response.data);
   }
 
-  private deserializeIdea(ideaData: any): Idea {
+  public async readIdea(id: string): Promise<Idea> {
+    const response: any = await this.http
+      .get(`${this.baseUrl}/ideas/${id}`, { headers: this.loggedHeaders }).toPromise();
 
-    const { id, attributes: { title, detail } } = ideaData;
+    return this.deserializeIdea(response.data, response.included);
+  }
 
-    return { id, title, detail };
+  public async readIdeaTags(id: string): Promise<Tag[]> {
+    const response: any = await this.http
+      .get(`${this.baseUrl}/ideas/${id}/tags`, { headers: this.loggedHeaders }).toPromise();
+
+    console.log(response.data);
+
+    return [].map(tag => this.deserializeTag(tag));
+  }
+
+  public async updateIdea({ id, title, detail }: Idea): Promise<Idea> {
+    const requestBody = {
+      data: {
+        type: 'ideas',
+        id,
+        attributes: {
+          title,
+          detail
+        }
+      }
+    };
+
+    const response: any = await this.http
+      .patch(`${this.baseUrl}/ideas/${id}`, requestBody, { headers: this.loggedHeaders }).toPromise();
+
+    return this.deserializeIdea(response.data);
+  }
+
+  private deserializeIdea(ideaData: any, included?: any[]): Idea {
+
+    const { id, attributes: { title, detail }, relationships } = ideaData;
+
+    const idea: Idea = { id, title, detail };
+
+    if (relationships && relationships.creator && included) {
+      const creatorUsername = relationships.creator.data.id;
+      const rawCreator = included.find(({ type, id: includedId }) => type === 'users' && includedId === creatorUsername);
+      const creator: User = this.deserializeUser(rawCreator);
+      idea.creator = creator;
+    }
+
+    return idea;
   }
 
   private deserializeMessage(msgData: any, included: any = []): Message {

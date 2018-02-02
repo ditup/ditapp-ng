@@ -1609,7 +1609,9 @@ describe('ModelService', () => {
           attributes: {
             title: 'test',
             detail: 'test detail',
-            created: 1234567890000,
+            created: 1234567890000
+          },
+          relationships: {
             creator: {
               data: {
                 type: 'users', id: 'test-user'
@@ -1623,6 +1625,113 @@ describe('ModelService', () => {
 
       expect(newIdea).toEqual({
         id: '0011223344',
+        title: 'test',
+        detail: 'test detail'
+      });
+    }));
+  });
+
+  describe('readIdea(id)', () => {
+    it('should read the idea', async(async () => {
+
+      const ideaId = '11223344';
+      // execute the function
+      const readIdeaPromise = service.readIdea(ideaId);
+      // mock the backend
+      const req = httpMock.expectOne(`${baseUrl}/ideas/${ideaId}`);
+
+      expect(req.request.method).toEqual('GET');
+      expect(req.request.headers.get('content-type')).toEqual('application/vnd.api+json');
+      expect(req.request.headers.has('authorization')).toEqual(true);
+
+      req.flush({
+        data: {
+          type: 'ideas',
+          id: ideaId,
+          attributes: {
+            title: 'test',
+            detail: 'test detail',
+            created: 1234567890000
+          },
+          relationships: {
+            creator: {
+              data: {
+                type: 'users', id: 'test-user'
+              }
+            }
+          }
+        },
+        included: [
+          {
+            type: 'users',
+            id: 'test-user',
+            attributes: {
+              username: 'test-user'
+            }
+          }
+        ]
+      });
+
+      const foundIdea = await readIdeaPromise;
+
+      expect(foundIdea).toEqual({
+        id: ideaId,
+        title: 'test',
+        detail: 'test detail',
+        creator: {
+          username: 'test-user'
+        }
+      });
+    }));
+  });
+
+  describe('updateIdea(Idea)', () => {
+    it('should update idea and return the updated idea', async(async () => {
+
+      const id = '11223344';
+      // execute the function
+      const updateIdeaPromise = service.updateIdea({ id, title: 'test', detail: 'updated test detail' });
+      // mock the backend
+      const req = httpMock.expectOne(`${baseUrl}/ideas/${id}`);
+
+      expect(req.request.method).toEqual('PATCH');
+      expect(req.request.headers.get('content-type')).toEqual('application/vnd.api+json');
+      expect(req.request.headers.has('authorization')).toEqual(true);
+
+      expect(req.request.body).toEqual({
+        data: {
+          type: 'ideas',
+          id,
+          attributes: {
+            title: 'test',
+            detail: 'updated test detail'
+          }
+        }
+      });
+
+      req.flush({
+        data: {
+          type: 'ideas',
+          id,
+          attributes: {
+            title: 'test',
+            detail: 'test detail',
+            created: 1234567890000
+          },
+          relationships: {
+            creator: {
+              data: {
+                type: 'users', id: 'test-user'
+              }
+            }
+          }
+        }
+      });
+
+      const updatedIdea = await updateIdeaPromise;
+
+      expect(updatedIdea).toEqual({
+        id,
         title: 'test',
         detail: 'test detail'
       });

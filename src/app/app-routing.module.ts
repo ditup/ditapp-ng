@@ -40,6 +40,9 @@ import { PeopleRandomComponent } from './people/people-random/people-random.comp
 
 // ideas
 import { CreateIdeaComponent } from './ideas/create-idea/create-idea.component';
+import { ReadIdeaComponent } from './ideas/read-idea/read-idea.component';
+import { UpdateIdeaComponent } from './ideas/update-idea/update-idea.component';
+import { IdeaResolver, IdeaTagsResolver } from './ideas/ideas-resolver.service';
 
 // tags
 import { TagsComponent } from './tags/tags.component';
@@ -243,6 +246,25 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: 'idea/:id/edit',
+    component: UpdateIdeaComponent,
+    canActivate: [AuthGuard],
+    resolve: {
+      idea: IdeaResolver,
+      ideaTags: IdeaTagsResolver
+    }
+  },
+  {
+    path: 'idea/:id',
+    component: ReadIdeaComponent,
+    // @TODO maybe not auth guard. maybe ideas should be visible to visitors, too
+    canActivate: [AuthGuard],
+    resolve: {
+      idea: IdeaResolver,
+      ideaTags: IdeaTagsResolver
+    }
+  },
+  {
     path: 'messages',
     component: MessagesComponent,
     canActivate: [AuthGuard],
@@ -323,6 +345,8 @@ const routeWrapper: Routes = [
     PeopleWithMyTagsResolver,
     PeopleWithTagResolver,
     NewPeopleResolver,
+    IdeaResolver,
+    IdeaTagsResolver,
     AuthService,
     ModelService
   ]

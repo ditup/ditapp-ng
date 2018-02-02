@@ -36,7 +36,8 @@ export class Tag {
 export class Idea {
   constructor(public id: string,
               public title: string,
-              public detail: string) { }
+              public detail: string,
+              public creator?: User) { }
 }
 
 export class Contact {

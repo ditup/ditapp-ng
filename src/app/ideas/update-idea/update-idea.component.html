@@ -1,0 +1,11 @@
+<app-fof *ngIf="!canEdit" message="Sorry, you don't have rights to edit this idea."></app-fof>
+
+<div *ngIf="canEdit">
+<h1>Update <a [routerLink]="'/idea/'+idea.id">idea</a></h1>
+
+<app-idea-form
+  submitButtonText="Save changes"
+  [idea]="idea"
+  [disabled]="isFormDisabled"
+  (submitIdea)="onSubmitIdea($event)"></app-idea-form>
+</div>

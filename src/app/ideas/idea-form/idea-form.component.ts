@@ -19,6 +19,7 @@ export class IdeaFormComponent implements OnInit {
 
   @Input() idea: Idea = { id: '', title: '', detail: '' };
   @Input() submitButtonText = 'Submit';
+  @Input() disabled = false;
 
   @Output() submitIdea = new EventEmitter<Idea>();
 
