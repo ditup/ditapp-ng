@@ -18,6 +18,11 @@ class IdeaFormStubComponent {
   @Output() submitIdea = new EventEmitter();
 }
 
+@Component({ selector: 'app-edit-tags', template: '' })
+class EditTagsStubComponent {
+  @Input() tags;
+}
+
 class AuthStubService { }
 class ModelStubService { }
 class ActivatedRouteStub {
@@ -39,6 +44,7 @@ describe('UpdateIdeaComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
+        EditTagsStubComponent,
         FofComponent,
         IdeaFormStubComponent,
         UpdateIdeaComponent

@@ -109,6 +109,10 @@ export class TagList {
     return _.map(this.tags, tag => tag.tagname);
   }
 
+  public find(tagname: string) {
+    return this.tags.find(tag => tag.tagname === tagname);
+  }
+
   public add(tagname: string) {
     // is the tag already added to the list?
     const tagIndex: number = _.findIndex(this.tags, (_tag) => {

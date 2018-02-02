@@ -779,15 +779,6 @@ export class ModelService {
     return this.deserializeIdea(response.data, response.included);
   }
 
-  public async readIdeaTags(id: string): Promise<Tag[]> {
-    const response: any = await this.http
-      .get(`${this.baseUrl}/ideas/${id}/tags`, { headers: this.loggedHeaders }).toPromise();
-
-    console.log(response.data);
-
-    return [].map(tag => this.deserializeTag(tag));
-  }
-
   public async updateIdea({ id, title, detail }: Idea): Promise<Idea> {
     const requestBody = {
       data: {
@@ -804,6 +795,38 @@ export class ModelService {
       .patch(`${this.baseUrl}/ideas/${id}`, requestBody, { headers: this.loggedHeaders }).toPromise();
 
     return this.deserializeIdea(response.data);
+  }
+
+  public async readIdeaTags(id: string): Promise<Tag[]> {
+    const response: any = await this.http
+      .get(`${this.baseUrl}/ideas/${id}/tags`, { headers: this.loggedHeaders }).toPromise();
+
+    return response.data.map(ideaTag => this.deserializeIdeaTag(ideaTag));
+  }
+
+  public async addIdeaTag(ideaId: string, tagname: string) {
+    const requestBody = {
+      data: {
+        type: 'idea-tags',
+        relationships: {
+          tag: { data: { type: 'tags', id: tagname } }
+        }
+      }
+    };
+
+    const response: any = await this.http
+      .post(`${this.baseUrl}/ideas/${ideaId}/tags`, requestBody, { headers: this.loggedHeaders }).toPromise();
+
+    return this.deserializeIdeaTag(response.data);
+  }
+
+  public async removeIdeaTag(ideaId: string, tagname: string) {
+    await this.http
+      .delete(`${this.baseUrl}/ideas/${ideaId}/tags/${tagname}`, { headers: this.loggedHeaders }).toPromise();
+  }
+
+  private deserializeIdeaTag(ideaTagData: any): Tag {
+    return this.deserializeTag(ideaTagData.relationships.tag.data);
   }
 
   private deserializeIdea(ideaData: any, included?: any[]): Idea {

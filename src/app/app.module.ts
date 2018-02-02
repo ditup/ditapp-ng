@@ -101,6 +101,7 @@ import { CreateIdeaComponent } from './ideas/create-idea/create-idea.component';
 import { ReadIdeaComponent } from './ideas/read-idea/read-idea.component';
 import { UpdateIdeaComponent } from './ideas/update-idea/update-idea.component';
 import { VoteComponent } from './shared/vote/vote.component';
+import { EditTagsComponent } from './shared/edit-tags/edit-tags.component';
 
 @NgModule({
   declarations: [
@@ -179,7 +180,8 @@ import { VoteComponent } from './shared/vote/vote.component';
     CreateIdeaComponent,
     ReadIdeaComponent,
     UpdateIdeaComponent,
-    VoteComponent
+    VoteComponent,
+    EditTagsComponent
   ],
   imports: [
     BrowserModule,
