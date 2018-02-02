@@ -24,3 +24,13 @@ export class IdeaTagsResolver implements Resolve<Tag[]> {
     return await this.model.readIdeaTags(id);
   }
 }
+
+@Injectable()
+export class IdeasWithMyTagsResolver implements Resolve<Idea[]> {
+
+  constructor(private model: ModelService) { }
+
+  async resolve(): Promise<Idea[]> {
+    return await this.model.findIdeasWithMyTags();
+  }
+}

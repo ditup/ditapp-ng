@@ -1,7 +1,7 @@
 import { TestBed, inject } from '@angular/core/testing';
 import { ActivatedRouteSnapshot } from '@angular/router';
 
-import { IdeaResolver, IdeaTagsResolver } from './ideas-resolver.service';
+import { IdeaResolver, IdeaTagsResolver, IdeasWithMyTagsResolver } from './ideas-resolver.service';
 
 import { ModelService } from '../model.service';
 
@@ -24,6 +24,12 @@ class ModelStubService {
       { tagname: 'tag0' },
       { tagname: 'tag1' },
       { tagname: 'tag2' }
+    ];
+  }
+
+  public async findIdeasWithMyTags(): Promise<Idea[]> {
+    return [
+      { id: '112233', title: 'ahoj idea', detail: 'idea detail' }
     ];
   }
 }
@@ -77,5 +83,27 @@ describe('IdeaTagsResolver', () => {
     const tags = await service.resolve(route);
 
     expect(tags.length).toEqual(3);
+  }));
+});
+
+describe('IdeasWithMyTagsResolver', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        IdeasWithMyTagsResolver,
+        { provide: ModelService, useClass: ModelStubService }
+      ],
+    });
+  });
+
+  it('should be created', inject([IdeasWithMyTagsResolver], (service: IdeasWithMyTagsResolver) => {
+    expect(service).toBeTruthy();
+  }));
+
+  it('should resolve with some ideas',
+     inject([IdeasWithMyTagsResolver], async (service: IdeasWithMyTagsResolver) => {
+    const ideas = await service.resolve();
+
+    expect(ideas.length).toEqual(1);
   }));
 });

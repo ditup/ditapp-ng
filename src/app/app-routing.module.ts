@@ -42,7 +42,9 @@ import { PeopleRandomComponent } from './people/people-random/people-random.comp
 import { CreateIdeaComponent } from './ideas/create-idea/create-idea.component';
 import { ReadIdeaComponent } from './ideas/read-idea/read-idea.component';
 import { UpdateIdeaComponent } from './ideas/update-idea/update-idea.component';
-import { IdeaResolver, IdeaTagsResolver } from './ideas/ideas-resolver.service';
+import { IdeasComponent } from './ideas/ideas/ideas.component';
+import { IdeasWithMyTagsComponent } from './ideas/ideas-with-my-tags/ideas-with-my-tags.component';
+import { IdeaResolver, IdeaTagsResolver, IdeasWithMyTagsResolver } from './ideas/ideas-resolver.service';
 
 // tags
 import { TagsComponent } from './tags/tags.component';
@@ -241,6 +243,20 @@ const routes: Routes = [
     ]
   },
   {
+    path: 'ideas',
+    component: IdeasComponent,
+    canActivate: [AuthGuard],
+    children: [
+      {
+        path: '',
+        component: IdeasWithMyTagsComponent,
+        resolve: {
+          ideas: IdeasWithMyTagsResolver
+        }
+      }
+    ]
+  },
+  {
     path: 'ideas/create',
     component: CreateIdeaComponent,
     canActivate: [AuthGuard],
@@ -347,6 +363,7 @@ const routeWrapper: Routes = [
     NewPeopleResolver,
     IdeaResolver,
     IdeaTagsResolver,
+    IdeasWithMyTagsResolver,
     AuthService,
     ModelService
   ]

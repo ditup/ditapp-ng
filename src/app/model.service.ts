@@ -825,6 +825,15 @@ export class ModelService {
       .delete(`${this.baseUrl}/ideas/${ideaId}/tags/${tagname}`, { headers: this.loggedHeaders }).toPromise();
   }
 
+  public async findIdeasWithMyTags(): Promise<Idea[]> {
+    const response: any = await this.http
+      .get(`${this.baseUrl}/ideas?filter[withMyTags]`, { headers: this.loggedHeaders }).toPromise();
+
+    const { data, included } = response;
+
+    return data.map(idea => this.deserializeIdea(idea, included));
+  }
+
   private deserializeIdeaTag(ideaTagData: any): Tag {
     return this.deserializeTag(ideaTagData.relationships.tag.data);
   }
@@ -835,11 +844,24 @@ export class ModelService {
 
     const idea: Idea = { id, title, detail };
 
+    // add creator
     if (relationships && relationships.creator && included) {
       const creatorUsername = relationships.creator.data.id;
       const rawCreator = included.find(({ type, id: includedId }) => type === 'users' && includedId === creatorUsername);
       const creator: User = this.deserializeUser(rawCreator);
       idea.creator = creator;
+    }
+
+    // add idea's tags
+    if (relationships && relationships.ideaTags && included) {
+      // get array of ideaTags
+      const ideaTags = relationships.ideaTags.data.map(ideaTag => {
+        const ideaTagId = ideaTag.id;
+        // find each ideaTag in included
+        return included.find(({ type, id: ideaTagIdIncluded }) => type === 'idea-tags' && ideaTagIdIncluded === ideaTagId);
+      });
+
+      idea.tags = ideaTags.map(ideaTag => this.deserializeIdeaTag(ideaTag));
     }
 
     return idea;

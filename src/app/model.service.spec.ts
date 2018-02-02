@@ -1841,6 +1841,62 @@ describe('ModelService', () => {
     }));
   });
 
+  describe('findIdeasWithMyTags()', () => {
+    it('should update idea and return the updated idea', async(async () => {
+      // execute the function
+      const findIdeasPromise = service.findIdeasWithMyTags();
+      // mock the backend
+      const req = httpMock.expectOne(`${baseUrl}/ideas?filter[withMyTags]`);
+
+      expect(req.request.method).toEqual('GET');
+      expect(req.request.headers.get('content-type')).toEqual('application/vnd.api+json');
+      expect(req.request.headers.has('authorization')).toEqual(true);
+
+      req.flush({
+        data: [
+          {
+            type: 'ideas',
+            id: '112233',
+            attributes: {
+              title: 'idea1',
+              detail: 'idea detail'
+            },
+            relationships: {
+              creator: { data: { type: 'users', id: 'user1' } },
+              ideaTags: { data: [
+                { type: 'idea-tags', id: '112233--tag0' },
+                { type: 'idea-tags', id: '112233--tag1' },
+                { type: 'idea-tags', id: '112233--tag2' }
+              ] }
+            }
+          }
+        ],
+        included: [
+          { type: 'users', id: 'user1', attributes: { username: 'user1' } },
+          { type: 'idea-tags', id: '112233--tag0', relationships: {
+            tag: { data: { type: 'tags', id: 'tag0' } }
+          } },
+          { type: 'idea-tags', id: '112233--tag1', relationships: {
+            tag: { data: { type: 'tags', id: 'tag1' } }
+          } },
+          { type: 'idea-tags', id: '112233--tag2', relationships: {
+            tag: { data: { type: 'tags', id: 'tag2' } }
+          } }
+        ]
+      });
+
+      const foundIdeas = await findIdeasPromise;
+
+      expect(foundIdeas).toEqual([{
+        id: '112233',
+        title: 'idea1',
+        detail: 'idea detail',
+        creator: { username: 'user1' },
+        tags: [{ tagname: 'tag0' }, { tagname: 'tag1' }, { tagname: 'tag2' }]
+      }]);
+    }));
+  });
+
   // verify that there are no outstanding requests remaining
   afterEach(() => {
     httpMock.verify();

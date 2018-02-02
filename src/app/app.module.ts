@@ -102,6 +102,8 @@ import { ReadIdeaComponent } from './ideas/read-idea/read-idea.component';
 import { UpdateIdeaComponent } from './ideas/update-idea/update-idea.component';
 import { VoteComponent } from './shared/vote/vote.component';
 import { EditTagsComponent } from './shared/edit-tags/edit-tags.component';
+import { IdeasComponent } from './ideas/ideas/ideas.component';
+import { IdeasWithMyTagsComponent } from './ideas/ideas-with-my-tags/ideas-with-my-tags.component';
 
 @NgModule({
   declarations: [
@@ -181,7 +183,9 @@ import { EditTagsComponent } from './shared/edit-tags/edit-tags.component';
     ReadIdeaComponent,
     UpdateIdeaComponent,
     VoteComponent,
-    EditTagsComponent
+    EditTagsComponent,
+    IdeasComponent,
+    IdeasWithMyTagsComponent
   ],
   imports: [
     BrowserModule,
