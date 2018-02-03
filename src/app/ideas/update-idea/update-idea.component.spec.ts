@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 
 import { UpdateIdeaComponent } from './update-idea.component';
+import { EditorOutputComponent } from 'app/shared/editor-output/editor-output.component';
 import { FofComponent } from '../../fof/fof.component';
 import { AuthService } from '../../auth.service';
 import { ModelService } from '../../model.service';
@@ -18,9 +19,10 @@ class IdeaFormStubComponent {
   @Output() submitIdea = new EventEmitter();
 }
 
-@Component({ selector: 'app-edit-tags', template: '' })
-class EditTagsStubComponent {
+@Component({ selector: 'app-idea-tag-editor', template: '' })
+class IdeaTagEditorStubComponent {
   @Input() tags;
+  @Input() idea;
 }
 
 class AuthStubService { }
@@ -44,7 +46,8 @@ describe('UpdateIdeaComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        EditTagsStubComponent,
+        IdeaTagEditorStubComponent,
+        EditorOutputComponent,
         FofComponent,
         IdeaFormStubComponent,
         UpdateIdeaComponent

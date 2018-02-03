@@ -271,6 +271,18 @@ const routes: Routes = [
     }
   },
   {
+    path: 'idea/:id/edit-tags',
+    component: UpdateIdeaComponent,
+    data: {
+      editOnlyTags: true
+    },
+    canActivate: [AuthGuard],
+    resolve: {
+      idea: IdeaResolver,
+      ideaTags: IdeaTagsResolver
+    }
+  },
+  {
     path: 'idea/:id',
     component: ReadIdeaComponent,
     // @TODO maybe not auth guard. maybe ideas should be visible to visitors, too

@@ -4,6 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { CreateIdeaComponent } from './create-idea.component';
 import { ModelService } from '../../model.service';
+import { NotificationsService } from 'app/notifications/notifications.service';
 
 @Component({ selector: 'app-idea-form', template: '' })
 class IdeaFormStubComponent {
@@ -30,7 +31,8 @@ describe('CreateIdeaComponent', () => {
         RouterTestingModule
       ],
       providers: [
-        { provide: ModelService, useClass: ModelStubService }
+        { provide: ModelService, useClass: ModelStubService },
+        NotificationsService
       ]
     })
     .compileComponents();

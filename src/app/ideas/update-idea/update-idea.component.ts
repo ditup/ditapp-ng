@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../auth.service';
 import { ModelService } from '../../model.service';
 import { NotificationsService } from '../../notifications/notifications.service';
-import { Idea, Tag, TagList } from '../../shared/types';
+import { Idea, Tag } from '../../shared/types';
 
 @Component({
   selector: 'app-update-idea',
@@ -15,7 +15,8 @@ export class UpdateIdeaComponent implements OnInit {
 
   public canEdit: boolean;
   public idea: Idea;
-  public ideaTags: TagList;
+  public ideaTags: Tag[];
+  public editOnlyTags: boolean;
   public isFormDisabled = false;
 
   constructor(private auth: AuthService,
@@ -25,10 +26,11 @@ export class UpdateIdeaComponent implements OnInit {
               private router: Router) { }
 
   ngOnInit() {
-    this.route.data.subscribe(({ idea, ideaTags }: { idea: Idea, ideaTags: Tag[] }) => {
+    this.route.data.subscribe(({ idea, ideaTags, editOnlyTags = false }: { idea: Idea, ideaTags: Tag[], editOnlyTags?: boolean }) => {
       this.idea = idea;
-      this.ideaTags = new TagList(ideaTags);
+      this.ideaTags = ideaTags;
       this.canEdit = this.auth.username === this.idea.creator.username;
+      this.editOnlyTags = editOnlyTags;
     });
   }
 
@@ -48,42 +50,5 @@ export class UpdateIdeaComponent implements OnInit {
 
     // enable the form again
     this.isFormDisabled = false;
-  }
-
-  async addTag(tag: Tag) {
-    // add tag to list and disable it
-    try {
-      this.ideaTags.add(tag.tagname);
-    } catch (e) {
-      this.notify.error(`Tag ${tag.tagname} is already added.`);
-      return;
-    }
-
-    const tagInList = this.ideaTags.find(tag.tagname);
-    tagInList['disabled'] = true;
-    // save the tag to database
-    await this.model.addIdeaTag(this.idea.id, tag.tagname);
-    // enable tag
-    delete tagInList['disabled'];
-    // notify
-    this.notify.info(`Tag successfully added.`);
-  }
-
-  async createAddTag(tag: Tag) {
-    // create tag
-    await this.model.createTag(tag);
-    // add tag
-    await this.addTag(tag);
-  }
-
-  async removeTag(tag: Tag) {
-    // disable tag in list
-    this.ideaTags.find(tag.tagname)['disabled'] = true;
-    // remove tag from api
-    await this.model.removeIdeaTag(this.idea.id, tag.tagname);
-    // remove tag from list
-    this.ideaTags.remove(tag.tagname);
-    // notify
-    this.notify.info(`Tag successfully removed.`);
   }
 }

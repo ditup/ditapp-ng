@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Idea } from '../../shared/types';
 import { ModelService } from '../../model.service';
+import { NotificationsService } from 'app/notifications/notifications.service';
 
 @Component({
   selector: 'app-create-idea',
@@ -13,6 +14,7 @@ export class CreateIdeaComponent implements OnInit {
   public idea: Idea = { id: '', title: '', detail: '' };
 
   constructor(private model: ModelService,
+              private notify: NotificationsService,
               private router: Router) { }
 
   ngOnInit() {
@@ -26,10 +28,11 @@ export class CreateIdeaComponent implements OnInit {
     // send request to server
     const newIdea: Idea = await this.model.createIdea(idea);
 
-    // @TODO notify about success
+    // notify about success
+    this.notify.info('Idea is created. Add some tags now!');
 
     // redirect to idea page
-    await this.router.navigate(['idea', newIdea.id]);
+    await this.router.navigate(['idea', newIdea.id, 'edit-tags']);
   }
 
 }
