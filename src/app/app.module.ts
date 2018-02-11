@@ -105,6 +105,7 @@ import { EditTagsComponent } from './shared/edit-tags/edit-tags.component';
 import { IdeasComponent } from './ideas/ideas/ideas.component';
 import { IdeasWithMyTagsComponent } from './ideas/ideas-with-my-tags/ideas-with-my-tags.component';
 import { IdeaTagEditorComponent } from './ideas/idea-tag-editor/idea-tag-editor.component';
+import { NewIdeasComponent } from './ideas/new-ideas/new-ideas.component';
 
 @NgModule({
   declarations: [
@@ -187,7 +188,8 @@ import { IdeaTagEditorComponent } from './ideas/idea-tag-editor/idea-tag-editor.
     EditTagsComponent,
     IdeasComponent,
     IdeasWithMyTagsComponent,
-    IdeaTagEditorComponent
+    IdeaTagEditorComponent,
+    NewIdeasComponent
   ],
   imports: [
     BrowserModule,

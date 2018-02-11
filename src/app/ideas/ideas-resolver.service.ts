@@ -34,3 +34,13 @@ export class IdeasWithMyTagsResolver implements Resolve<Idea[]> {
     return await this.model.findIdeasWithMyTags();
   }
 }
+
+@Injectable()
+export class NewIdeasResolver implements Resolve<Idea[]> {
+
+  constructor(private model: ModelService) { }
+
+  async resolve(): Promise<Idea[]> {
+    return await this.model.findNewIdeas();
+  }
+}

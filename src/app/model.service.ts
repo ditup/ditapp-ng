@@ -834,6 +834,15 @@ export class ModelService {
     return data.map(idea => this.deserializeIdea(idea, included));
   }
 
+  public async findNewIdeas(): Promise<Idea[]> {
+    const response: any = await this.http
+      .get(`${this.baseUrl}/ideas?sort=-created`, { headers: this.loggedHeaders }).toPromise();
+
+    const { data, included } = response;
+
+    return data.map(idea => this.deserializeIdea(idea, included));
+  }
+
   private deserializeIdeaTag(ideaTagData: any): Tag {
     return this.deserializeTag(ideaTagData.relationships.tag.data);
   }

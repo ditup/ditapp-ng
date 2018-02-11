@@ -1897,6 +1897,49 @@ describe('ModelService', () => {
     }));
   });
 
+  describe('findNewIdeas()', () => {
+    it('should update idea and return the updated idea', async(async () => {
+      // execute the function
+      const findIdeasPromise = service.findNewIdeas();
+      // mock the backend
+      const req = httpMock.expectOne(`${baseUrl}/ideas?sort=-created`);
+
+      expect(req.request.method).toEqual('GET');
+      expect(req.request.headers.get('content-type')).toEqual('application/vnd.api+json');
+      expect(req.request.headers.has('authorization')).toEqual(true);
+
+      req.flush({
+        data: [
+          {
+            type: 'ideas',
+            id: '112233',
+            attributes: {
+              title: 'idea1',
+              detail: 'idea detail'
+            },
+            relationships: {
+              creator: { data: { type: 'users', id: 'user1' } }
+            }
+          }
+        ],
+        included: [
+          { type: 'users', id: 'user1', attributes: { username: 'user1' } }
+        ]
+      });
+
+      const foundIdeas = await findIdeasPromise;
+
+      console.log(foundIdeas);
+
+      expect(foundIdeas).toEqual([{
+        id: '112233',
+        title: 'idea1',
+        detail: 'idea detail',
+        creator: { username: 'user1' }
+      }]);
+    }));
+  });
+
   // verify that there are no outstanding requests remaining
   afterEach(() => {
     httpMock.verify();
