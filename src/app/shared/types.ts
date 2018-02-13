@@ -173,3 +173,10 @@ export class Message {
 export class Notification {
   constructor (public msg: string, public type?: string, public id?: string|number, public ttl?: number) {}
 }
+
+export class Comment {
+  constructor (public id: string,
+               public creator: User,
+               public created: number,
+               public content: string) { }
+}

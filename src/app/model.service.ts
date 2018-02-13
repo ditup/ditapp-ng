@@ -11,7 +11,7 @@ import 'rxjs/add/observable/of';
 
 import * as _ from 'lodash';
 
-import { Idea, Tag, User, UserTag, Message, Contact } from './shared/types';
+import { Comment, Idea, Tag, User, UserTag, Message, Contact } from './shared/types';
 import { AuthService } from './auth.service';
 
 @Injectable()
@@ -843,8 +843,37 @@ export class ModelService {
     return data.map(idea => this.deserializeIdea(idea, included));
   }
 
+  public async readCommentsOf({ type, id }: { type: string, id: string }): Promise<Comment[]> {
+    const response: any = await this.http
+      .get(`${this.baseUrl}/${type}/${id}/comments`, { headers: this.loggedHeaders }).toPromise();
+
+    return response.data.map(comment => this.deserializeComment(comment));
+  }
+
+  public async addCommentTo({ type, id }: { type: string, id: string }, { content }: Comment): Promise<Comment> {
+
+    const requestBody = {
+      data: {
+        type: 'comments',
+        attributes: { content }
+      }
+    };
+
+    const response: any = await this.http
+      .post(`${this.baseUrl}/${type}/${id}/comments`, requestBody, { headers: this.loggedHeaders }).toPromise();
+
+    return this.deserializeComment(response.data);
+  }
+
   private deserializeIdeaTag(ideaTagData: any): Tag {
     return this.deserializeTag(ideaTagData.relationships.tag.data);
+  }
+
+  private deserializeComment(commentData: any): Comment {
+    const { id, attributes: { content, created }, relationships: { creator: { data: { id: username } } } } = commentData;
+
+    const comment = { id, content, created, creator: { username } };
+    return comment;
   }
 
   private deserializeIdea(ideaData: any, included?: any[]): Idea {

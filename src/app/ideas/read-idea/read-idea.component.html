@@ -11,7 +11,10 @@
 <section class="idea-detail">
   <app-editor-output [value]="idea.detail"></app-editor-output>
 </section>
+<section class="idea-creator">
+  <app-user-small [user]="idea.creator"></app-user-small>
+</section>
 
-<!--section class="idea-discussion">
-
-</section-->
+<section class="idea-comments">
+  <app-comments [comments]="comments" [primary]="idea"></app-comments>
+</section>

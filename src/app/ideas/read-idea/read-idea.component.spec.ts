@@ -5,9 +5,11 @@ import { Component, Input } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
 import { ReadIdeaComponent } from './read-idea.component';
-import { EditorOutputComponent } from '../../shared/editor-output/editor-output.component';
-import { MaterialModule } from '../../material.module';
-import { AuthService } from '../../auth.service';
+import { EditorOutputComponent } from 'app/shared/editor-output/editor-output.component';
+import { MaterialModule } from 'app/material.module';
+import { AuthService } from 'app/auth.service';
+import { UserSmallStubComponent } from 'app/shared/user-small/user-small.component';
+import { CommentsStubComponent } from 'app/comments/comments.component';
 
 @Component({ selector: 'app-vote', template: '' })
 class VoteStubComponent { }
@@ -35,10 +37,12 @@ describe('ReadIdeaComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
+        CommentsStubComponent,
         EditorOutputComponent,
         ReadIdeaComponent,
         TagListStubComponent,
-        VoteStubComponent,
+        UserSmallStubComponent,
+        VoteStubComponent
       ],
       imports: [
         MaterialModule,

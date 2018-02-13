@@ -1,0 +1,13 @@
+<div class="comment-wrapper">
+  <section class="comment-content">
+    <app-editor-output [value]="comment.content"></app-editor-output>
+  </section>
+  <section class="comment-info">
+    <app-user-small [user]="comment.creator"></app-user-small>
+    <span>{{comment.created | amTimeAgo}}</span>
+    <button>reply</button>
+    <button *ngIf="isCreatorMe">edit</button>
+    <button *ngIf="isCreatorMe" (click)="askReallyDelete(true)">delete</button>
+    <span *ngIf="isDeleteDisplayed">Really delete? <button (click)="deleteComment">yes</button> <button (click)="askReallyDelete(false)">no</button></span>
+  </section>
+</div>

@@ -1929,12 +1929,101 @@ describe('ModelService', () => {
 
       const foundIdeas = await findIdeasPromise;
 
-      console.log(foundIdeas);
-
       expect(foundIdeas).toEqual([{
         id: '112233',
         title: 'idea1',
         detail: 'idea detail',
+        creator: { username: 'user1' }
+      }]);
+    }));
+  });
+
+  describe('addCommentTo({ type, id }, comment)', () => {
+    it('should add comment to idea or other dit object', async(async () => {
+      // execute the function
+      const addCommentPromise = service.addCommentTo({ type: 'ideas', id: '111222333' }, { content: 'comment content' });
+      // mock the backend
+      const req = httpMock.expectOne(`${baseUrl}/ideas/111222333/comments`);
+
+      expect(req.request.method).toEqual('POST');
+      expect(req.request.headers.get('content-type')).toEqual('application/vnd.api+json');
+      expect(req.request.headers.has('authorization')).toEqual(true);
+
+      expect(req.request.body).toEqual({
+        data: {
+          type: 'comments',
+          attributes: {
+            content: 'comment content'
+          }
+        }
+      });
+
+      req.flush({
+        data: {
+          type: 'comments',
+          id: '112233',
+          attributes: {
+            content: 'comment content',
+            created: 1234
+          },
+          relationships: {
+            creator: { data: { type: 'users', id: 'user1' } },
+            primary: { data: { type: 'ideas', id: '00001' } }
+          }
+        },
+        included: [
+          { type: 'users', id: 'user1', attributes: { username: 'user1' } }
+        ]
+      });
+
+      const newComment = await addCommentPromise;
+
+      expect(newComment).toEqual({
+        id: '112233',
+        content: 'comment content',
+        created: 1234,
+        creator: { username: 'user1' }
+      });
+    }));
+  });
+
+  describe('readCommentsOf({ type, id })', () => {
+    it('should update idea and return the updated idea', async(async () => {
+      // execute the function
+      const readCommentsPromise = service.readCommentsOf({ type: 'ideas', id: '111' });
+      // mock the backend
+      const req = httpMock.expectOne(`${baseUrl}/ideas/111/comments`);
+
+      expect(req.request.method).toEqual('GET');
+      expect(req.request.headers.get('content-type')).toEqual('application/vnd.api+json');
+      expect(req.request.headers.has('authorization')).toEqual(true);
+
+      req.flush({
+        data: [
+          {
+            type: 'comments',
+            id: '112233',
+            attributes: {
+              content: 'comment content',
+              created: 1234
+            },
+            relationships: {
+              creator: { data: { type: 'users', id: 'user1' } },
+              primary: { data: { type: 'ideas', id: '111' } }
+            }
+          }
+        ],
+        included: [
+          { type: 'users', id: 'user1', attributes: { username: 'user1' } }
+        ]
+      });
+
+      const foundComments = await readCommentsPromise;
+
+      expect(foundComments).toEqual([{
+        id: '112233',
+        content: 'comment content',
+        created: 1234,
         creator: { username: 'user1' }
       }]);
     }));

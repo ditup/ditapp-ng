@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
 import { ModelService } from '../model.service';
-import { Idea, Tag } from '../shared/types';
+import { Comment, Idea, Tag } from '../shared/types';
 
 @Injectable()
 export class IdeaResolver implements Resolve<Idea> {
@@ -42,5 +42,16 @@ export class NewIdeasResolver implements Resolve<Idea[]> {
 
   async resolve(): Promise<Idea[]> {
     return await this.model.findNewIdeas();
+  }
+}
+
+@Injectable()
+export class IdeaCommentsResolver implements Resolve<Comment[]> {
+
+  constructor(private model: ModelService) { }
+
+  async resolve(route: ActivatedRouteSnapshot): Promise<Comment[]> {
+    const id: string = route.params['id'];
+    return await this.model.readCommentsOf({ type: 'ideas', id });
   }
 }

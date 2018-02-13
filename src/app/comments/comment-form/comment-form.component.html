@@ -1,0 +1,13 @@
+<form (ngSubmit)="onSubmit()" [formGroup]="commentForm">
+  <fieldset [disabled]="disabled">
+
+    <label for="content">New comment</label>
+    <textarea placeholder="Write your comment."
+      appEditor [form]="commentForm" #editor
+      formControlName="content"></textarea>
+
+    <button type="submit"
+      [disabled]="!commentForm.valid">{{submitButtonText}}</button>
+
+  </fieldset>
+</form>

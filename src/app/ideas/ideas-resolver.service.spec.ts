@@ -1,11 +1,13 @@
 import { TestBed, inject } from '@angular/core/testing';
 import { ActivatedRouteSnapshot } from '@angular/router';
 
-import { IdeaResolver, IdeaTagsResolver, IdeasWithMyTagsResolver, NewIdeasResolver } from './ideas-resolver.service';
+import {
+  IdeaResolver, IdeaCommentsResolver, IdeaTagsResolver, IdeasWithMyTagsResolver, NewIdeasResolver
+} from './ideas-resolver.service';
 
 import { ModelService } from '../model.service';
 
-import { Idea, Tag } from '../shared/types';
+import { Comment, Idea, Tag } from '../shared/types';
 
 class ModelStubService {
   public async readIdea(_id): Promise<Idea> {
@@ -24,6 +26,13 @@ class ModelStubService {
       { tagname: 'tag0' },
       { tagname: 'tag1' },
       { tagname: 'tag2' }
+    ];
+  }
+
+  public async readCommentsOf({ type: _type, id: _id }): Promise<Comment[]> {
+    return [
+      { id: '00000', content: 'asdf', created: 1, creator: { username: 'test' } },
+      { id: '11111', content: 'asdf', created: 1, creator: { username: 'test' } }
     ];
   }
 
@@ -134,5 +143,28 @@ describe('IdeasNewResolver', () => {
     const ideas = await service.resolve();
 
     expect(ideas.length).toEqual(2);
+  }));
+});
+
+describe('IdeaCommentsResolver', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        IdeaCommentsResolver,
+        { provide: ModelService, useClass: ModelStubService },
+        { provide: ActivatedRouteSnapshot, useClass: ActivatedRouteSnapshotStub }
+      ],
+    });
+  });
+
+  it('should be created', inject([IdeaCommentsResolver], (service: IdeaCommentsResolver) => {
+    expect(service).toBeTruthy();
+  }));
+
+  it('should resolve with some comments',
+     inject([IdeaCommentsResolver, ActivatedRouteSnapshot], async (service: IdeaCommentsResolver, route: ActivatedRouteSnapshot) => {
+    const comments = await service.resolve(route);
+
+    expect(comments.length).toEqual(2);
   }));
 });

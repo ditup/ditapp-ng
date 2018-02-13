@@ -45,7 +45,9 @@ import { UpdateIdeaComponent } from './ideas/update-idea/update-idea.component';
 import { IdeasComponent } from './ideas/ideas/ideas.component';
 import { IdeasWithMyTagsComponent } from './ideas/ideas-with-my-tags/ideas-with-my-tags.component';
 import { NewIdeasComponent } from './ideas/new-ideas/new-ideas.component';
-import { IdeaResolver, IdeaTagsResolver, IdeasWithMyTagsResolver, NewIdeasResolver } from './ideas/ideas-resolver.service';
+import {
+  IdeaResolver, IdeaCommentsResolver, IdeaTagsResolver, IdeasWithMyTagsResolver, NewIdeasResolver
+} from './ideas/ideas-resolver.service';
 
 // tags
 import { TagsComponent } from './tags/tags.component';
@@ -297,7 +299,8 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     resolve: {
       idea: IdeaResolver,
-      ideaTags: IdeaTagsResolver
+      ideaTags: IdeaTagsResolver,
+      comments: IdeaCommentsResolver
     }
   },
   {
@@ -383,6 +386,7 @@ const routeWrapper: Routes = [
     NewPeopleResolver,
     IdeaResolver,
     IdeaTagsResolver,
+    IdeaCommentsResolver,
     IdeasWithMyTagsResolver,
     NewIdeasResolver,
     AuthService,

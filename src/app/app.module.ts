@@ -106,6 +106,9 @@ import { IdeasComponent } from './ideas/ideas/ideas.component';
 import { IdeasWithMyTagsComponent } from './ideas/ideas-with-my-tags/ideas-with-my-tags.component';
 import { IdeaTagEditorComponent } from './ideas/idea-tag-editor/idea-tag-editor.component';
 import { NewIdeasComponent } from './ideas/new-ideas/new-ideas.component';
+import { CommentsComponent } from './comments/comments.component';
+import { CommentComponent } from './comments/comment/comment.component';
+import { CommentFormComponent } from './comments/comment-form/comment-form.component';
 
 @NgModule({
   declarations: [
@@ -189,7 +192,10 @@ import { NewIdeasComponent } from './ideas/new-ideas/new-ideas.component';
     IdeasComponent,
     IdeasWithMyTagsComponent,
     IdeaTagEditorComponent,
-    NewIdeasComponent
+    NewIdeasComponent,
+    CommentsComponent,
+    CommentComponent,
+    CommentFormComponent
   ],
   imports: [
     BrowserModule,
