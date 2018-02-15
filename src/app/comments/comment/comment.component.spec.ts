@@ -2,11 +2,14 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MomentModule } from 'angular2-moment';
 
 import { CommentComponent } from './comment.component';
+import { CommentFormStubComponent } from '../comment-form/comment-form.component';
 import { EditorOutputComponent } from 'app/shared/editor-output/editor-output.component';
 import { UserSmallStubComponent } from 'app/shared/user-small/user-small.component';
 import { AuthService } from 'app/auth.service';
+import { ModelService } from 'app/model.service';
 
 class AuthStubService { }
+class ModelStubService { }
 
 describe('CommentComponent', () => {
   let component: CommentComponent;
@@ -16,6 +19,7 @@ describe('CommentComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         CommentComponent,
+        CommentFormStubComponent,
         EditorOutputComponent,
         UserSmallStubComponent
       ],
@@ -23,7 +27,8 @@ describe('CommentComponent', () => {
         MomentModule
       ],
       providers: [
-        { provide: AuthService, useClass: AuthStubService }
+        { provide: AuthService, useClass: AuthStubService },
+        { provide: ModelService, useClass: ModelStubService }
       ]
     })
     .compileComponents();

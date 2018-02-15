@@ -1,13 +1,54 @@
-<div class="comment-wrapper">
+<!-- display comment -->
+<div *ngIf="!isEditing" class="comment-wrapper">
+
+  <!-- content of the comment -->
   <section class="comment-content">
     <app-editor-output [value]="comment.content"></app-editor-output>
   </section>
+
   <section class="comment-info">
+
+    <!-- comment creator and creationtime -->
     <app-user-small [user]="comment.creator"></app-user-small>
     <span>{{comment.created | amTimeAgo}}</span>
-    <button>reply</button>
-    <button *ngIf="isCreatorMe">edit</button>
-    <button *ngIf="isCreatorMe" (click)="askReallyDelete(true)">delete</button>
-    <span *ngIf="isDeleteDisplayed">Really delete? <button (click)="deleteComment">yes</button> <button (click)="askReallyDelete(false)">no</button></span>
+
+    <!-- action buttons -->
+
+    <!-- reply -->
+    <button [disabled]="true || areButtonsDisabled">reply</button>
+
+    <!-- edit (only when logged user is creator) -->
+    <button [disabled]="areButtonsDisabled"
+      (click)="editComment(true)"
+      *ngIf="isCreatorMe">edit</button>
+
+    <!-- delete (only when logged user is creator) -->
+    <!-- when clicked, ask for confirmation -->
+    <button [disabled]="areButtonsDisabled"
+      *ngIf="isCreatorMe" (click)="askReallyDelete(true)">delete</button>
+
+    <!-- delete confirmation -->
+    <span *ngIf="isDeleteDisplayed">
+      Really delete?
+      <!-- yes -->
+      <button [disabled]="areButtonsDisabled"
+        (click)="deleteComment()">yes</button>
+      <!-- no -->
+      <button [disabled]="areButtonsDisabled"
+        (click)="askReallyDelete(false)">no</button>
+    </span>
+
+    <!-- end of action buttons -->
   </section>
+</div>
+
+<!-- edit comment -->
+<div *ngIf="isEditing" class="comment-wrapper">
+  <app-comment-form
+    [disabled]="isFormDisabled"
+    [comment]="comment"
+    [isNew]="false"
+    (cancel)="editComment(false)"
+    (submitComment)="updateComment($event)"
+    submitButtonText="Save"></app-comment-form>
 </div>

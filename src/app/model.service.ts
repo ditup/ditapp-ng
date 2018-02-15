@@ -755,6 +755,9 @@ export class ModelService {
     return this.deserializeContact(data, included);
   }
 
+  /**
+   * Create idea
+   */
   public async createIdea({ title, detail }: Idea): Promise<Idea> {
     const requestBody = {
       data: {
@@ -772,6 +775,9 @@ export class ModelService {
     return this.deserializeIdea(response.data);
   }
 
+  /**
+   * Read idea by id
+   */
   public async readIdea(id: string): Promise<Idea> {
     const response: any = await this.http
       .get(`${this.baseUrl}/ideas/${id}`, { headers: this.loggedHeaders }).toPromise();
@@ -779,6 +785,9 @@ export class ModelService {
     return this.deserializeIdea(response.data, response.included);
   }
 
+  /**
+   * Update idea
+   */
   public async updateIdea({ id, title, detail }: Idea): Promise<Idea> {
     const requestBody = {
       data: {
@@ -797,6 +806,9 @@ export class ModelService {
     return this.deserializeIdea(response.data);
   }
 
+  /**
+   * Read tags of idea
+   */
   public async readIdeaTags(id: string): Promise<Tag[]> {
     const response: any = await this.http
       .get(`${this.baseUrl}/ideas/${id}/tags`, { headers: this.loggedHeaders }).toPromise();
@@ -804,6 +816,9 @@ export class ModelService {
     return response.data.map(ideaTag => this.deserializeIdeaTag(ideaTag));
   }
 
+  /**
+   * Add tag to idea
+   */
   public async addIdeaTag(ideaId: string, tagname: string) {
     const requestBody = {
       data: {
@@ -820,11 +835,18 @@ export class ModelService {
     return this.deserializeIdeaTag(response.data);
   }
 
+  /**
+   * Remove tag from idea
+   */
   public async removeIdeaTag(ideaId: string, tagname: string) {
     await this.http
       .delete(`${this.baseUrl}/ideas/${ideaId}/tags/${tagname}`, { headers: this.loggedHeaders }).toPromise();
   }
 
+  /**
+   * Read list of ideas sorted by relevance to the logged user
+   * Relevance: idea has tags in common with the user
+   */
   public async findIdeasWithMyTags(): Promise<Idea[]> {
     const response: any = await this.http
       .get(`${this.baseUrl}/ideas?filter[withMyTags]`, { headers: this.loggedHeaders }).toPromise();
@@ -834,6 +856,9 @@ export class ModelService {
     return data.map(idea => this.deserializeIdea(idea, included));
   }
 
+  /**
+   * Read list of ideas sorted from newest to oldest
+   */
   public async findNewIdeas(): Promise<Idea[]> {
     const response: any = await this.http
       .get(`${this.baseUrl}/ideas?sort=-created`, { headers: this.loggedHeaders }).toPromise();
@@ -843,6 +868,9 @@ export class ModelService {
     return data.map(idea => this.deserializeIdea(idea, included));
   }
 
+  /**
+   * Read comments of a primary dit (i.e. idea)
+   */
   public async readCommentsOf({ type, id }: { type: string, id: string }): Promise<Comment[]> {
     const response: any = await this.http
       .get(`${this.baseUrl}/${type}/${id}/comments`, { headers: this.loggedHeaders }).toPromise();
@@ -850,6 +878,9 @@ export class ModelService {
     return response.data.map(comment => this.deserializeComment(comment));
   }
 
+  /**
+   * Create comment for primary dit (i.e. idea)
+   */
   public async addCommentTo({ type, id }: { type: string, id: string }, { content }: Comment): Promise<Comment> {
 
     const requestBody = {
@@ -861,6 +892,33 @@ export class ModelService {
 
     const response: any = await this.http
       .post(`${this.baseUrl}/${type}/${id}/comments`, requestBody, { headers: this.loggedHeaders }).toPromise();
+
+    return this.deserializeComment(response.data);
+  }
+
+  /**
+   * Delete comment by id
+   */
+  public async deleteComment(id: string): Promise<void> {
+    await this.http
+      .delete(`${this.baseUrl}/comments/${id}`, { headers: this.loggedHeaders }).toPromise();
+  }
+
+  /**
+   * Update comment
+   */
+  public async updateComment({ id, content }: Comment): Promise<Comment> {
+
+    const requestBody = {
+      data: {
+        type: 'comments',
+        id,
+        attributes: { content }
+      }
+    };
+
+    const response: any = await this.http
+      .patch(`${this.baseUrl}/comments/${id}`, requestBody, { headers: this.loggedHeaders }).toPromise();
 
     return this.deserializeComment(response.data);
   }

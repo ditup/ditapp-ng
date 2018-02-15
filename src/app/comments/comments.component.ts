@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import * as _ from 'lodash';
 
 import { Comment, Idea } from 'app/shared/types';
 import { ModelService } from 'app/model.service';
@@ -21,6 +22,11 @@ export class CommentsComponent implements OnInit {
   async submitComment(comment: Comment) {
     const newComment = await this.model.addCommentTo({ type: 'ideas', id: this.primary.id }, comment);
     this.comments.push(newComment);
+  }
+
+  // comment is already deleted from server, should just be removed from the list
+  removeComment(comment: Comment) {
+    _.pullAllBy(this.comments, [comment], 'id');
   }
 
 }

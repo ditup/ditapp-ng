@@ -2029,6 +2029,75 @@ describe('ModelService', () => {
     }));
   });
 
+  describe('updateComment({ id, content })', () => {
+    it('should edit the comment and return the edited', async(async () => {
+      // execute the function
+      const updateCommentPromise = service.updateComment({ id: '111222333', content: 'comment content' });
+      // mock the backend
+      const req = httpMock.expectOne(`${baseUrl}/comments/111222333`);
+
+      expect(req.request.method).toEqual('PATCH');
+      expect(req.request.headers.get('content-type')).toEqual('application/vnd.api+json');
+      expect(req.request.headers.has('authorization')).toEqual(true);
+
+      expect(req.request.body).toEqual({
+        data: {
+          type: 'comments',
+          id: '111222333',
+          attributes: {
+            content: 'comment content'
+          }
+        }
+      });
+
+      req.flush({
+        data: {
+          type: 'comments',
+          id: '111222333',
+          attributes: {
+            content: 'comment content',
+            created: 1234
+          },
+          relationships: {
+            creator: { data: { type: 'users', id: 'user1' } },
+            primary: { data: { type: 'ideas', id: '00001' } }
+          }
+        },
+        included: [
+          { type: 'users', id: 'user1', attributes: { username: 'user1' } }
+        ]
+      });
+
+      const updatedComment = await updateCommentPromise;
+
+      expect(updatedComment).toEqual({
+        id: '111222333',
+        content: 'comment content',
+        created: 1234,
+        creator: { username: 'user1' }
+      });
+    }));
+  });
+
+  describe('deleteComment(id)', () => {
+    it('should edit the comment and return the edited', async(async () => {
+      // execute the function
+      const deleteCommentPromise = service.deleteComment('111222333');
+      // mock the backend
+      const req = httpMock.expectOne(`${baseUrl}/comments/111222333`);
+
+      expect(req.request.method).toEqual('DELETE');
+      expect(req.request.headers.get('content-type')).toEqual('application/vnd.api+json');
+      expect(req.request.headers.has('authorization')).toEqual(true);
+
+      req.flush(null);
+
+      const deletedComment = await deleteCommentPromise;
+
+      expect(deletedComment).toEqual(undefined);
+    }));
+  });
+
   // verify that there are no outstanding requests remaining
   afterEach(() => {
     httpMock.verify();
