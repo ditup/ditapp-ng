@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import * as _ from 'lodash';
 
 import { AuthService } from 'app/auth.service';
 import { ModelService } from 'app/model.service';
@@ -13,6 +14,8 @@ export class CommentComponent implements OnInit {
 
   // comment to display or edit
   @Input() comment: Comment;
+  // is this a comment or a reaction?
+  @Input() isReaction = false;
   // event 'remove' raised after this comment is removed from api
   // should be used for removing it from whatever list it resides
   @Output() remove = new EventEmitter<void>();
@@ -24,6 +27,9 @@ export class CommentComponent implements OnInit {
   public isEditing = false;
   // is the comment form disabled? (i.e. when we're saving it)
   public isFormDisabled = false;
+
+  // show reply form?
+  public isReplying = false;
 
   constructor(private auth: AuthService,
               private model: ModelService) { }
@@ -48,7 +54,7 @@ export class CommentComponent implements OnInit {
     this.areButtonsDisabled = true;
 
     // delete the comment
-    await this.model.deleteComment(this.comment.id);
+    await this.model.deleteComment(this.comment.id, (this.isReaction) ? 'reactions' : 'comments');
 
     // enable comment actions again
     this.areButtonsDisabled = false;
@@ -70,7 +76,7 @@ export class CommentComponent implements OnInit {
 
     // save the update to database
     comment.id = this.comment.id;
-    const updated: Comment = await this.model.updateComment(comment);
+    const updated: Comment = await this.model.updateComment(comment, (this.isReaction) ? 'reactions' : 'comments');
 
     // update the comment with the saved data
     this.comment.content = updated.content;
@@ -81,6 +87,24 @@ export class CommentComponent implements OnInit {
     this.editComment(false);
   }
 
+  displayReactionForm(display: boolean) {
+    this.isReplying = display;
+  }
+
+  async createReaction(reply: Comment) {
+    const savedReaction = await this.model.addCommentTo({ id: this.comment.id, type: 'comments' }, reply, 'reactions');
+
+    this.comment.reactions = this.comment.reactions || [];
+    this.comment.reactions.push(savedReaction);
+
+    this.displayReactionForm(false);
+  }
+
+  // reaction is already deleted from server, should just be removed from the list
+  removeReaction(reaction: Comment) {
+    _.pullAllBy(this.comment.reactions, [reaction], 'id');
+  }
+
 }
 
 /**
@@ -89,5 +113,6 @@ export class CommentComponent implements OnInit {
 @Component({ selector: 'app-comment', template: '' })
 export class CommentStubComponent {
   @Input() comment;
+  @Input() isReaction;
   @Output() remove;
 }

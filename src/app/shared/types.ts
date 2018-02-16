@@ -178,5 +178,6 @@ export class Comment {
   constructor (public id: string,
                public creator: User,
                public created: number,
-               public content: string) { }
+               public content: string,
+               public reactions?: Comment[]) { }
 }

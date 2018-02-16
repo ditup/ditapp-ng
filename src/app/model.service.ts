@@ -875,23 +875,23 @@ export class ModelService {
     const response: any = await this.http
       .get(`${this.baseUrl}/${type}/${id}/comments`, { headers: this.loggedHeaders }).toPromise();
 
-    return response.data.map(comment => this.deserializeComment(comment));
+    return response.data.map(comment => this.deserializeComment(comment, response.included));
   }
 
   /**
    * Create comment for primary dit (i.e. idea)
    */
-  public async addCommentTo({ type, id }: { type: string, id: string }, { content }: Comment): Promise<Comment> {
+  public async addCommentTo({ type, id }: { type: string, id: string }, { content }: Comment, comments = 'comments'): Promise<Comment> {
 
     const requestBody = {
       data: {
-        type: 'comments',
+        type: comments,
         attributes: { content }
       }
     };
 
     const response: any = await this.http
-      .post(`${this.baseUrl}/${type}/${id}/comments`, requestBody, { headers: this.loggedHeaders }).toPromise();
+      .post(`${this.baseUrl}/${type}/${id}/${comments}`, requestBody, { headers: this.loggedHeaders }).toPromise();
 
     return this.deserializeComment(response.data);
   }
@@ -899,26 +899,26 @@ export class ModelService {
   /**
    * Delete comment by id
    */
-  public async deleteComment(id: string): Promise<void> {
+  public async deleteComment(id: string, comments = 'comments'): Promise<void> {
     await this.http
-      .delete(`${this.baseUrl}/comments/${id}`, { headers: this.loggedHeaders }).toPromise();
+      .delete(`${this.baseUrl}/${comments}/${id}`, { headers: this.loggedHeaders }).toPromise();
   }
 
   /**
    * Update comment
    */
-  public async updateComment({ id, content }: Comment): Promise<Comment> {
+  public async updateComment({ id, content }: Comment, comments = 'comments'): Promise<Comment> {
 
     const requestBody = {
       data: {
-        type: 'comments',
+        type: comments,
         id,
         attributes: { content }
       }
     };
 
     const response: any = await this.http
-      .patch(`${this.baseUrl}/comments/${id}`, requestBody, { headers: this.loggedHeaders }).toPromise();
+      .patch(`${this.baseUrl}/${comments}/${id}`, requestBody, { headers: this.loggedHeaders }).toPromise();
 
     return this.deserializeComment(response.data);
   }
@@ -927,10 +927,31 @@ export class ModelService {
     return this.deserializeTag(ideaTagData.relationships.tag.data);
   }
 
-  private deserializeComment(commentData: any): Comment {
-    const { id, attributes: { content, created }, relationships: { creator: { data: { id: username } } } } = commentData;
+  private deserializeCommentSimple(commentData: any): Comment {
+    return {
+      id: commentData.id,
+      content: commentData.attributes.content,
+      created: commentData.attributes.created,
+      creator: { username: commentData.relationships.creator.data.id }
+    };
+  }
 
-    const comment = { id, content, created, creator: { username } };
+  private deserializeComment(commentData: any, included?: any[]): Comment {
+
+    const comment = this.deserializeCommentSimple(commentData);
+
+    // format the reactions
+    if (included && _.has(commentData, 'relationships.reactions')) {
+      const reactions = commentData.relationships.reactions.data
+        .map(({ id }: { id: string }) => {
+          const includedReaction = included.find(incl => incl.type === 'reactions' && incl.id === id);
+
+          return this.deserializeCommentSimple(includedReaction);
+        });
+
+      comment.reactions = reactions;
+    }
+
     return comment;
   }
 
