@@ -857,6 +857,21 @@ export class ModelService {
   }
 
   /**
+   * Read list of ideas with given tags
+   */
+  public async findIdeasWithTags(tags: Tag[]): Promise<Idea[]> {
+
+    const tagnames = tags.map(tag => tag.tagname).join(',');
+
+    const response: any = await this.http
+      .get(`${this.baseUrl}/ideas?filter[withTags]=${tagnames}`, { headers: this.loggedHeaders }).toPromise();
+
+    const { data, included } = response;
+
+    return data.map(idea => this.deserializeIdea(idea, included));
+  }
+
+  /**
    * Read list of ideas sorted from newest to oldest
    */
   public async findNewIdeas(): Promise<Idea[]> {

@@ -109,6 +109,7 @@ import { NewIdeasComponent } from './ideas/new-ideas/new-ideas.component';
 import { CommentsComponent } from './comments/comments.component';
 import { CommentComponent } from './comments/comment/comment.component';
 import { CommentFormComponent } from './comments/comment-form/comment-form.component';
+import { TagRelatedIdeasComponent } from './tag/tag-related-ideas/tag-related-ideas.component';
 
 @NgModule({
   declarations: [
@@ -195,7 +196,8 @@ import { CommentFormComponent } from './comments/comment-form/comment-form.compo
     NewIdeasComponent,
     CommentsComponent,
     CommentComponent,
-    CommentFormComponent
+    CommentFormComponent,
+    TagRelatedIdeasComponent
   ],
   imports: [
     BrowserModule,

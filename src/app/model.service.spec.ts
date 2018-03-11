@@ -2080,7 +2080,7 @@ describe('ModelService', () => {
   });
 
   describe('deleteComment(id)', () => {
-    it('should edit the comment and return the edited', async(async () => {
+    it('should remove a comment', async(async () => {
       // execute the function
       const deleteCommentPromise = service.deleteComment('111222333');
       // mock the backend
@@ -2095,6 +2095,47 @@ describe('ModelService', () => {
       const deletedComment = await deleteCommentPromise;
 
       expect(deletedComment).toEqual(undefined);
+    }));
+  });
+
+  describe('findIdeasWithTags(Tag[]): Idea[]', () => {
+    it('find ideas which have given tags', async(async () => {
+      // execute the function
+      const findIdeasPromise = service.findIdeasWithTags([{ tagname: 'test' }]);
+      // mock the backend
+      const req = httpMock.expectOne(`${baseUrl}/ideas?filter[withTags]=test`);
+
+      expect(req.request.method).toEqual('GET');
+      expect(req.request.headers.get('content-type')).toEqual('application/vnd.api+json');
+      expect(req.request.headers.has('authorization')).toEqual(true);
+
+      req.flush({
+        data: [
+          {
+            type: 'ideas',
+            id: '112233',
+            attributes: {
+              title: 'idea1',
+              detail: 'idea detail'
+            },
+            relationships: {
+              creator: { data: { type: 'users', id: 'user1' } }
+            }
+          }
+        ],
+        included: [
+          { type: 'users', id: 'user1', attributes: { username: 'user1' } }
+        ]
+      });
+
+      const foundIdeas = await findIdeasPromise;
+
+      expect(foundIdeas).toEqual([{
+        id: '112233',
+        title: 'idea1',
+        detail: 'idea detail',
+        creator: { username: 'user1' }
+      }]);
     }));
   });
 

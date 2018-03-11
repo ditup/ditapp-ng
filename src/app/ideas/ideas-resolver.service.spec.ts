@@ -2,7 +2,8 @@ import { TestBed, inject } from '@angular/core/testing';
 import { ActivatedRouteSnapshot } from '@angular/router';
 
 import {
-  IdeaResolver, IdeaCommentsResolver, IdeaTagsResolver, IdeasWithMyTagsResolver, NewIdeasResolver
+  IdeaResolver, IdeaCommentsResolver, IdeaTagsResolver, IdeasWithMyTagsResolver,
+  IdeasWithTagResolver, NewIdeasResolver
 } from './ideas-resolver.service';
 
 import { ModelService } from '../model.service';
@@ -48,12 +49,18 @@ class ModelStubService {
       { id: '123456', title: 'ahoj2 idea', detail: 'idea detail' }
     ];
   }
+
+  public async findIdeasWithTags(): Promise<Idea[]> {
+    return [
+      { id: '112233', title: 'ahoj idea', detail: 'idea detail' },
+      { id: '123456', title: 'ahoj2 idea', detail: 'idea detail' }
+    ];
+  }
 }
 
 class ActivatedRouteSnapshotStub {
-  params = {
-    id: '123456'
-  };
+  params = { id: '123456' };
+  parent = { params: { id: '123456' } };
 }
 
 describe('IdeaResolver', () => {
@@ -166,5 +173,28 @@ describe('IdeaCommentsResolver', () => {
     const comments = await service.resolve(route);
 
     expect(comments.length).toEqual(2);
+  }));
+});
+
+describe('IdeasWithTagResolver', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        IdeasWithTagResolver,
+        { provide: ModelService, useClass: ModelStubService },
+        { provide: ActivatedRouteSnapshot, useClass: ActivatedRouteSnapshotStub }
+      ],
+    });
+  });
+
+  it('should be created', inject([IdeasWithTagResolver], (service: IdeasWithTagResolver) => {
+    expect(service).toBeTruthy();
+  }));
+
+  it('should resolve with some ideas',
+     inject([IdeasWithTagResolver, ActivatedRouteSnapshot], async (service: IdeasWithTagResolver, route: ActivatedRouteSnapshot) => {
+    const ideas = await service.resolve(route);
+
+    expect(ideas.length).toEqual(2);
   }));
 });

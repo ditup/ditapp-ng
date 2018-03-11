@@ -55,3 +55,14 @@ export class IdeaCommentsResolver implements Resolve<Comment[]> {
     return await this.model.readCommentsOf({ type: 'ideas', id });
   }
 }
+
+@Injectable()
+export class IdeasWithTagResolver implements Resolve<Idea[]> {
+
+  constructor(private model: ModelService) { }
+
+  async resolve(route: ActivatedRouteSnapshot): Promise<Idea[]> {
+    const tagname: string = route.parent.params['tagname'];
+    return await this.model.findIdeasWithTags([{ tagname }]);
+  }
+}

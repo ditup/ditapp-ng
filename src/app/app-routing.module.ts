@@ -30,6 +30,7 @@ import { ProfileComponent } from './user/profile/profile.component';
 import { TagComponent } from './tag/tag.component';
 import { TagRelatedTagsComponent } from './tag/tag-related-tags/tag-related-tags.component';
 import { TagRelatedPeopleComponent } from './tag/tag-related-people/tag-related-people.component';
+import { TagRelatedIdeasComponent } from './tag/tag-related-ideas/tag-related-ideas.component';
 
 // people
 import { PeopleComponent } from './people/people.component';
@@ -46,7 +47,7 @@ import { IdeasComponent } from './ideas/ideas/ideas.component';
 import { IdeasWithMyTagsComponent } from './ideas/ideas-with-my-tags/ideas-with-my-tags.component';
 import { NewIdeasComponent } from './ideas/new-ideas/new-ideas.component';
 import {
-  IdeaResolver, IdeaCommentsResolver, IdeaTagsResolver, IdeasWithMyTagsResolver, NewIdeasResolver
+  IdeaResolver, IdeaCommentsResolver, IdeaTagsResolver, IdeasWithMyTagsResolver, NewIdeasResolver, IdeasWithTagResolver
 } from './ideas/ideas-resolver.service';
 
 // tags
@@ -164,16 +165,23 @@ const routes: Routes = [
     children: [
       {
         path: '',
+        component: TagRelatedPeopleComponent,
+        resolve: {
+          users: PeopleWithTagResolver
+        }
+      },
+      {
+        path: 'tags',
         component: TagRelatedTagsComponent,
         resolve: {
           tags: TagsRelatedToTagResolver
         }
       },
       {
-        path: 'people',
-        component: TagRelatedPeopleComponent,
+        path: 'ideas',
+        component: TagRelatedIdeasComponent,
         resolve: {
-          users: PeopleWithTagResolver
+          ideas: IdeasWithTagResolver
         }
       }
     ]
@@ -388,6 +396,7 @@ const routeWrapper: Routes = [
     IdeaTagsResolver,
     IdeaCommentsResolver,
     IdeasWithMyTagsResolver,
+    IdeasWithTagResolver,
     NewIdeasResolver,
     AuthService,
     ModelService
