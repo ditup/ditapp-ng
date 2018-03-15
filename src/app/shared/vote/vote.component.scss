@@ -1,0 +1,18 @@
+@import "../../shared/styles/colors";
+
+.vote-button {
+  color: gray;
+  background-color: white;
+  padding: 0.1em;
+
+  &.button-voted {
+    background-color: $darker;
+    color: white;
+  }
+}
+
+.vote-sum {
+  text-align: center;
+  color: gray;
+  font-size: 1.2em;
+}
