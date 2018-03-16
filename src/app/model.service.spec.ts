@@ -68,10 +68,11 @@ describe('ModelService', () => {
 
       req.flush({ meta: {
         email: 'email@example.com',
-        token: 'aaaa.bbbb.cccc'
+        token: 'aaaa.bbbb.cccc',
+        isNewUser: false
       } });
       const response = await verifyEmailPromise;
-      expect(response).toEqual({ email: 'email@example.com', token: 'aaaa.bbbb.cccc' });
+      expect(response).toEqual({ email: 'email@example.com', token: 'aaaa.bbbb.cccc', isNewUser: false });
     }));
 
   });
@@ -152,6 +153,30 @@ describe('ModelService', () => {
       });
 
       const response = await findRandomTagsPromise;
+      expect(response.length).toEqual(4);
+    }));
+  });
+
+  describe('findPopularTags(limit = 10)', () => {
+    it('should success', async(async () => {
+      const findPopularTagsPromise = service.findPopularTags(4);
+
+      const req = httpMock.expectOne(`${baseUrl}/tags?sort=-popularityByUses&page[offset]=0&page[limit]=4`);
+
+      expect(req.request.method).toEqual('GET');
+      expect(req.request.headers.get('content-type')).toEqual('application/vnd.api+json');
+      expect(req.request.headers.has('authorization')).toEqual(true);
+
+      req.flush({
+        data: [
+          { type: 'tags', id: 'tag3', attributes: { popularityByUses: 25 } },
+          { type: 'tags', id: 'tag4', attributes: { popularityByUses: 12 } },
+          { type: 'tags', id: 'tag6', attributes: { popularityByUses: 11 } },
+          { type: 'tags', id: 'tag0', attributes: { popularityByUses: 7 } }
+        ]
+      });
+
+      const response = await findPopularTagsPromise;
       expect(response.length).toEqual(4);
     }));
   });

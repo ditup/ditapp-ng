@@ -86,7 +86,7 @@ export class ModelService {
       });
   }
 
-  async verifyEmail(username: string, code: string): Promise<{ email: string, token: string }> {
+  async verifyEmail(username: string, code: string): Promise<{ email: string, token: string, isNewUser: boolean }> {
 
     const body = {
       data: {
@@ -103,8 +103,8 @@ export class ModelService {
         .patch(`${this.baseUrl}/account`, body, { headers: this.notLoggedHeaders })
         .toPromise();
 
-      const { email, token } = response.meta;
-      return { email, token };
+      const { email, token, isNewUser } = response.meta;
+      return { email, token, isNewUser };
     } catch (e) {
       throw { status: e.status, message: 'todo error' };
     }
@@ -511,6 +511,19 @@ export class ModelService {
 
     const response: any = await this.http
       .get(`${this.baseUrl}/tags?filter[random]&page[offset]=0&page[limit]=${limit}`, { headers })
+      .toPromise();
+
+    const { data } = response;
+
+    const tags: Tag[] = data.map(tag => this.deserializeTag(tag));
+    return tags;
+  }
+
+  public async findPopularTags(limit = 10): Promise<Tag[]> {
+    const headers = this.loggedHeaders;
+
+    const response: any = await this.http
+      .get(`${this.baseUrl}/tags?sort=-popularityByUses&page[offset]=0&page[limit]=${limit}`, { headers })
       .toPromise();
 
     const { data } = response;
@@ -1070,7 +1083,13 @@ export class ModelService {
   }
 
   private deserializeTag(tagData: any): Tag {
-    return { tagname: tagData.id };
+    const tag: Tag = { tagname: tagData.id };
+
+    if (tagData.attributes && tagData.attributes.hasOwnProperty('popularityByUses')) {
+      tag.popularityByUses = tagData.attributes.popularityByUses;
+    }
+
+    return tag;
   }
 
   private deserializeUserTag(rawUserTag: any, included: any[]): UserTag {

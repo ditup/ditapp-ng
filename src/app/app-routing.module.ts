@@ -11,6 +11,14 @@ import { UserComponent } from './user/user.component';
 import { MessagesWithUserComponent } from './messages-with-user/messages-with-user.component';
 import { MapComponent } from './map/map.component';
 
+// welcome
+import { WelcomeComponent } from './welcome/welcome.component';
+import { WelcomeStartComponent } from './welcome/welcome-start/welcome-start.component';
+import { WelcomeTagsComponent } from './welcome/welcome-tags/welcome-tags.component';
+import { WelcomeInfoComponent } from './welcome/welcome-info/welcome-info.component';
+import { WelcomeLocationComponent } from './welcome/welcome-location/welcome-location.component';
+import { WelcomeFinishComponent } from './welcome/welcome-finish/welcome-finish.component';
+
 // user edit
 import { UserEditComponent } from './user-edit/user-edit.component';
 import { UserEditProfileComponent } from './user-edit/user-edit-profile/user-edit-profile.component';
@@ -75,7 +83,12 @@ import { TagResolver } from './tag/tag-resolver.service';
 import { ContactResolver } from './contact/contact-resolver.service';
 import { ThreadsResolver } from './messages/threads-resolver.service';
 import { MessagesResolver } from './messages-with-user/messages-resolver.service';
-import { TagsRelatedToMyTagsResolver, RandomTagsResolver, TagsRelatedToTagResolver } from './tags/tags-resolver.service';
+import {
+  PopularTagsResolver,
+  TagsRelatedToMyTagsResolver,
+  RandomTagsResolver,
+  TagsRelatedToTagResolver
+} from './tags/tags-resolver.service';
 import { PeopleWithMyTagsResolver, NewPeopleResolver, PeopleWithTagResolver } from './people/people-resolver.service';
 
 // services
@@ -354,6 +367,40 @@ const routes: Routes = [
     }
   },
   {
+    path: 'welcome',
+    component: WelcomeComponent,
+    canActivate: [AuthGuard],
+    resolve: {
+      user: LoggedUserResolver
+    },
+    children: [
+      {
+        path: '',
+        component: WelcomeStartComponent
+      },
+      {
+        path: '1',
+        component: WelcomeTagsComponent,
+        resolve: {
+          userTags: LoggedUserTagsResolver,
+          popularTags: PopularTagsResolver
+        }
+      },
+      {
+        path: '2',
+        component: WelcomeInfoComponent
+      },
+      {
+        path: '3',
+        component: WelcomeLocationComponent
+      },
+      {
+        path: 'done',
+        component: WelcomeFinishComponent
+      }
+    ]
+  },
+  {
     path: '**',
     component: FofComponent
   }
@@ -389,6 +436,7 @@ const routeWrapper: Routes = [
     TagsRelatedToMyTagsResolver,
     TagsRelatedToTagResolver,
     RandomTagsResolver,
+    PopularTagsResolver,
     PeopleWithMyTagsResolver,
     PeopleWithTagResolver,
     NewPeopleResolver,
